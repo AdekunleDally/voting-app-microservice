@@ -5,5 +5,5 @@ metadata:
   labels:
     app: demo-voting-app
 data:
-  RESULTS_SERVICE_URL: "http://localhost:8085/results"
+  RESULTS_SERVICE_URL: "http://localhost:30005/results"
   REDIS_ADDR: "redis:6379"

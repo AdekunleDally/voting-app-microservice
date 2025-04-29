@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
     - name: voting-app-pod
-      image: "voting-service:1.0"
+      image: "voting-service:4.0"
       ports:
         - containerPort: 8083
       envFrom:

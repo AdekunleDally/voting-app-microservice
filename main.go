@@ -81,7 +81,7 @@ func votingPage(w http.ResponseWriter, r *http.Request) {
 	resultsServiceURL := os.Getenv("RESULTS_SERVICE_URL")
 
 	if resultsServiceURL == "" {
-		resultsServiceURL = "http://localhost:8085/results" // Fallback URL in case env is not set
+		resultsServiceURL = "http://localhost:30005/results" // Fallback URL in case env is not set
 	}
 
 	// Create data to pass to the template
