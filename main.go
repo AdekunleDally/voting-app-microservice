@@ -7,13 +7,14 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"  
-    "github.com/prometheus/client_golang/prometheus"
-    "github.com/prometheus/client_golang/prometheus/promauto"
-    "github.com/prometheus/client_golang/prometheus/promhttp"
+	"time"
+
 	_ "github.com/lib/pq"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
-  
+
 type VoteCounts struct {
 	Id       int
 	CatVotes int
@@ -132,44 +133,43 @@ func initPostgres() {
     `)
 	if err != nil {
 		log.Fatalf("Error creating votes table: %s\n", err.Error())
-	}  
+	}
 
 	log.Println("PostgreSQL database and table initialized successfully.")
 }
 
 func showResults(w http.ResponseWriter, r *http.Request) {
-    start := time.Now()
-	resultsRequestCounter.Inc() // Count request
+	start := time.Now()
+	resultsRequestCounter.Inc()                                       // Count request
 	defer resultsRequestDuration.Observe(time.Since(start).Seconds()) // Observe duration
 
-    // Get the voting page URL from the environment
-    votingServiceURL := os.Getenv("VOTING_SERVICE_URL")
-    if votingServiceURL == "" {
-        votingServiceURL = "http://localhost:8083"  // Fallback URL in case env is not set
-    }
+	// Get the voting page URL from the environment
+	votingServiceURL := os.Getenv("VOTING_SERVICE_URL")
+	if votingServiceURL == "" {
+		votingServiceURL = "http://localhost:30004" // Fallback URL in case env is not set
+	}
 
-    // Retrieve the votes from PostgreSQL
-    row := postgresDB.QueryRow("SELECT id, cat_votes, dog_votes FROM votes")
-    voteCounts := VoteCounts{}
-    err := row.Scan(&voteCounts.Id, &voteCounts.CatVotes, &voteCounts.DogVotes)
-    if err != nil {
-        http.Error(w, "Unable to retrieve votes", http.StatusInternalServerError)
-        return
-    }
+	// Retrieve the votes from PostgreSQL
+	row := postgresDB.QueryRow("SELECT id, cat_votes, dog_votes FROM votes")
+	voteCounts := VoteCounts{}
+	err := row.Scan(&voteCounts.Id, &voteCounts.CatVotes, &voteCounts.DogVotes)
+	if err != nil {
+		http.Error(w, "Unable to retrieve votes", http.StatusInternalServerError)
+		return
+	}
 
-    // Combine voteCounts and votingServiceURL into a struct
-    data := struct {
-        VoteCounts
-        VotingServiceURL string
-    }{
-        VoteCounts:       voteCounts,
-        VotingServiceURL: votingServiceURL,
-    }
+	// Combine voteCounts and votingServiceURL into a struct
+	data := struct {
+		VoteCounts
+		VotingServiceURL string
+	}{
+		VoteCounts:       voteCounts,
+		VotingServiceURL: votingServiceURL,
+	}
 
-    // Render the template with the voteCounts and URL
-    err = templates.ExecuteTemplate(w, "results.html", data)
-    if err != nil {
-        http.Error(w, "Unable to load results", http.StatusInternalServerError)
-    }
+	// Render the template with the voteCounts and URL
+	err = templates.ExecuteTemplate(w, "results.html", data)
+	if err != nil {
+		http.Error(w, "Unable to load results", http.StatusInternalServerError)
+	}
 }
-  

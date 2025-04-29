@@ -8,7 +8,7 @@ metadata:
 spec:
   containers:
     - name: results-app-pod
-      image: results-service:1.0
+      image: results-service:4.0
       ports:
         - containerPort: 8085
       envFrom:
