@@ -3,29 +3,28 @@ apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
     extraPortMappings:
-      # Expose Redis for internal communication (optional, only needed for troubleshooting)
+      # Required for Ingress to expose HTTP and HTTPS
+      - containerPort: 80
+        hostPort: 80
+        protocol: TCP
+      - containerPort: 443
+        hostPort: 443
+        protocol: TCP
+
+      # Optional: expose internal services for debugging or direct access
       - containerPort: 6379
         hostPort: 6379
         protocol: TCP
-
-      # Expose PostgreSQL for internal communication (optional, only needed for troubleshooting)
       - containerPort: 5432
         hostPort: 5432
         protocol: TCP
-
-      # Expose Voting Service to interact with user/browser
       - containerPort: 8083
         hostPort: 8083
         protocol: TCP
-
-      # Expose Results Service to interact with user/browser
       - containerPort: 8085
         hostPort: 8085
         protocol: TCP
-
-      # Expose Worker Service (usually not needed externally unless required for debugging)
       - containerPort: 8084
         hostPort: 8084
         protocol: TCP
-
   - role: worker
