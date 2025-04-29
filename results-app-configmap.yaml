@@ -5,6 +5,6 @@ metadata:
   labels:
     app: demo-voting-app
 data:
-  VOTING_SERVICE_URL: "http://votingapp.local"
+  VOTING_SERVICE_URL: "http://localhost:8083"
   POSTGRES_USER: "postgres"
   POSTGRES_DB: "postgres"
