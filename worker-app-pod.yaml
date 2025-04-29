@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: worker-app-pod
+  labels:
+    name: worker-app-pod
+    app: demo-voting-app
+spec:
+  containers:
+    - name: worker-app-pod
+      image: worker-service:1.0
+      ports:
+        - containerPort: 8084
+      envFrom:
+        - configMapRef:
+            name: worker-app-config
+        - secretRef:
+            name: worker-app-secret
